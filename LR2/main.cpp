@@ -1,27 +1,8 @@
+#include "cyl.h"
 #include <cmath>
 #include <iostream>
 
 using namespace std;
-
-class cyl {
-private:
-    float radius;
-    float height;
-
-public:
-    cyl(float radius = 0, float height = 0)
-    {
-        this->radius = abs(radius);
-        this->height = abs(height);
-    }
-
-    float Volume() const { return float(M_PI) * radius * radius * height; }
-    float Area() const
-    {
-        return 2 * (float(M_PI) * radius * radius) + ///< площадь двух кругов в основании
-            (2 * float(M_PI) * radius * height); ///< площадь боковой стороны
-    }
-};
 
 float inputFloat(const char* msg)
 {
@@ -42,7 +23,7 @@ float inputFloat(const char* msg)
             return out;
         } catch (const std::exception& e) {
             (void)e;
-            cout << "Неверный ввод!\n";
+            cout << "Неверный ввод! Повторите: ";
             continue;
         }
     }
@@ -50,12 +31,32 @@ float inputFloat(const char* msg)
 
 int main()
 {
+    cout << "Использование конструктора по умолчанию:\n";
+    cyl def = cyl();
+    cout << "Высота равна " << def.getHeight() << "\n"
+         << "Радиус равен " << def.getRadius() << "\n";
+    cout << "Обьем равен " << def.Volume() << "\n"
+         << "Площадь равна " << def.Area() << "\n";
+
+    cout << "\n\n";
+
+    cout << "Использование конструктора с установкой значений\n";
     cout << "Введите параметры циллиндра\n(Параметры берутся по модулю):\n";
     float r = inputFloat("Введите радиус: ");
     float h = inputFloat("Введите высоту: ");
     cyl c = cyl(r, h);
+    cout << "Высота равна " << c.getHeight() << "\n"
+         << "Радиус равен " << c.getRadius() << "\n";
     cout << "Обьем равен " << c.Volume() << "\n"
          << "Площадь равна " << c.Area() << "\n";
 
+    cout << "\n\n";
+
+    cout << "Использование конструктора копирования. Копируется цилиндр, заданный пользователем.\n";
+    cyl copy = cyl(c);
+    cout << "Высота равна " << copy.getHeight() << "\n"
+         << "Радиус равен " << copy.getRadius() << "\n";
+    cout << "Обьем равен " << copy.Volume() << "\n"
+         << "Площадь равна " << copy.Area() << "\n";
     return 0;
 }

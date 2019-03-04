@@ -8,4 +8,4 @@ set(HEADERS
 
 )
 
-add_executable(program ${HEADERS} ${SOURCES})
+add_executable(LR1 ${HEADERS} ${SOURCES})

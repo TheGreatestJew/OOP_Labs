@@ -9,4 +9,4 @@ set(HEADERS
 cyl.h
 )
 
-add_executable(program ${HEADERS} ${SOURCES})
+add_executable(LR2 ${HEADERS} ${SOURCES})

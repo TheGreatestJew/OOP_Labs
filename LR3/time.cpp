@@ -6,14 +6,17 @@ Time::Time()
     m_hour = 0;
     m_minutes = 0;
     m_second = 0;
+    m_neg = false;
 }
 
 Time::Time(TimeValue hour, TimeValue minute, TimeValue second)
     : Time()
 {
-    addHour(hour);
-    addMinutes(minute);
-    addSeconds(second);
+    m_hour = hour;
+    m_minutes = minute;
+    m_second = second;
+
+    fixTime();
 }
 
 Time::Time(const Time& other)
@@ -22,71 +25,149 @@ Time::Time(const Time& other)
     m_hour = other.m_hour;
     m_minutes = other.m_minutes;
     m_second = other.m_second;
+    m_neg = other.m_neg;
+
+    fixTime();
 }
 
 Time::~Time()
 {
-    std::string str;
-    str << *this;
-    std::cout << "Время " << str << " уничтожено.\n";
+    //Нечего удалять.
 }
 
-Time Time::operator+(TimeValue minutes) const
+Time Time::operator+(unsigned minutes) const
 {
-    return *this + Time(0, minutes, 0);
-}
+    Time time(*this);
 
-Time Time::operator+(Time other) const
-{
-    Time out = Time(*this);
+    time.add(0, minutes, 0);
 
-    out.addHour(other.m_hour);
-    out.addMinutes(other.m_minutes);
-    out.addSeconds(other.m_second);
-
-    return out;
+    return time;
 }
 
 Time Time::operator-(const Time& other) const
 {
-    return *this + (-other);
+    Time out = Time(*this);
+
+    if (other.negative()) {
+        out.add(other.m_hour, other.m_minutes, other.m_second);
+    } else {
+        out.minus(other.m_hour, other.m_minutes, other.m_second);
+    }
+
+    return out;
 }
 
 Time Time::operator-() const
 {
-    Time out;
-    out.m_hour = -m_hour;
-    out.m_minutes = -m_minutes;
-    out.m_second = -m_second;
-    return out;
+    Time t = Time(*this);
+    t.m_neg = !t.m_neg;
+    return t;
 }
 
 bool Time::negative() const
 {
-    if (m_hour < 0)
-        return true;
-    if (m_hour == 0 && m_minutes < 0)
-        return true;
-    if (m_hour == 0 && m_minutes == 0 && m_second < 0)
-        return true;
-    return false;
+    return m_neg;
 }
 
-void Time::addHour(TimeValue hour)
+bool Time::isZero() const
 {
-    m_hour += hour;
+    return m_hour == 0 && m_minutes == 0 && m_second == 0;
 }
 
-void Time::addMinutes(TimeValue minutes)
+void Time::fixTime()
 {
-    m_minutes += minutes % 60;
-    addHour(minutes / 60);
+    m_minutes += m_second / 60;
+    m_second %= 60;
+
+    m_hour += m_minutes / 60;
+    m_minutes %= 60;
 }
 
-void Time::addSeconds(TimeValue seconds)
+void Time::add(TimeValue h, TimeValue m, TimeValue s)
 {
-    m_second += seconds % 60;
-    addMinutes(seconds / 60);
+    if (negative()) {
+        if (-(*this) > Time(h, m, s)) {
+            m_hour -= h;
+            if (m_minutes > m)
+                m_minutes -= m;
+            else {
+                m_minutes = 60 - (m - m_minutes);
+                m_hour -= 1;
+            }
+            if (m_second > s)
+                m_second -= s;
+            else {
+                m_second = 60 - (s - m_second);
+                m_minutes -= 1;
+            }
+
+            fixTime();
+        } else {
+            m_neg = false;
+            m_hour = h - m_hour;
+            if (m > m_minutes)
+                m_minutes = m - m_minutes;
+            else {
+                m_minutes = 60 - (m_minutes - m);
+                m_hour--;
+            }
+            if (m > m_second)
+                m_second = s - m_second;
+            else {
+                m_second = 60 - (m_second - s);
+                m_minutes--;
+            }
+            fixTime();
+        }
+    } else {
+        m_hour += h;
+        m_minutes += m;
+        m_second += s;
+        fixTime();
+    }
+}
+
+void Time::minus(TimeValue h, TimeValue m, TimeValue s)
+{
+    if (negative()) {
+        m_hour += h;
+        m_minutes += m;
+        m_second += s;
+        fixTime();
+    } else {
+        if (*this > Time(h, m, s)) {
+            m_hour -= h;
+            if (m_minutes > m)
+                m_minutes -= m;
+            else {
+                m_minutes = 60 - (m - m_minutes);
+                m_hour -= 1;
+            }
+            if (m_second > s)
+                m_second -= s;
+            else {
+                m_second = 60 - (s - m_second);
+                m_minutes -= 1;
+            }
+            fixTime();
+        } else {
+            m_neg = true;
+            m_hour = (h - m_hour);
+            if (m > m_minutes)
+                m_minutes = m - m_minutes;
+            else {
+                m_minutes = 60 - (m_minutes - m);
+                m_hour--;
+            }
+            if (m > m_second)
+                m_second = s - m_second;
+            else {
+                m_second = 60 - (m_second - s);
+                m_minutes--;
+            }
+            fixTime();
+        }
+    }
 }
 
 std::string& operator<<(std::string& left, const Time& right)
@@ -95,9 +176,9 @@ std::string& operator<<(std::string& left, const Time& right)
     if (right.negative())
         left += "-";
     auto hour = right.m_hour;
-    if (hour < 0) //-1 час - 0 на отрицательных часах
-        hour++;
-    left += std::to_string(abs(hour)) + ":" + std::to_string(abs(right.m_minutes)) + ":" + std::to_string(abs(right.m_second));
+
+    left += std::to_string(hour) + ":" + std::to_string(right.m_minutes) + ":" + std::to_string(right.m_second);
+
     return left;
 }
 
@@ -136,13 +217,44 @@ Time& operator>>(const std::string& left, Time& right)
         seconds += left[pos];
     }
 
-    right.m_hour = 0; //Пусть кидает исключение
-    right.m_minutes = 0;
-    right.m_second = 0;
+    right.m_neg = neg;
+    right.m_hour = static_cast<TimeValue>(std::stoul(hour));
+    right.m_minutes = static_cast<TimeValue>(std::stoul(minutes));
+    right.m_second = static_cast<TimeValue>(std::stoul(seconds));
 
-    right.addHour((neg) ? -std::stoi(hour) : std::stoi(hour));
-    right.addMinutes((neg) ? -std::stoi(minutes) : std::stoi(minutes));
-    right.addSeconds((neg) ? -std::stoi(seconds) : std::stoi(seconds));
+    right.fixTime();
 
     return right;
+}
+
+bool operator>(const Time& left, const Time& right)
+{
+    if (left.negative() && !right.negative())
+        return false;
+    else if (!left.negative() && right.negative())
+        return true;
+
+    if (left.negative()) {
+        if (left.m_hour < right.m_hour)
+            return true;
+        if (left.m_hour == right.m_hour && left.m_minutes < right.m_minutes) {
+            return true;
+        }
+
+        else if (left.m_hour == right.m_hour && left.m_minutes == right.m_minutes && left.m_second < right.m_second) {
+            return true;
+        }
+        return false;
+    } else {
+        if (left.m_hour > right.m_hour)
+            return true;
+        if (left.m_hour == right.m_hour && left.m_minutes > right.m_minutes) {
+            return true;
+        }
+
+        else if (left.m_hour == right.m_hour && left.m_minutes == right.m_minutes && left.m_second > right.m_second) {
+            return true;
+        }
+        return false;
+    }
 }

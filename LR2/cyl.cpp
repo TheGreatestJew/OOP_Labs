@@ -1,6 +1,11 @@
 #include "cyl.h"
 
 #include <cmath>
+
+#ifndef M_PI
+#define M_PI 3.14159
+#endif
+
 float cyl::getHeight() const
 {
     return height;

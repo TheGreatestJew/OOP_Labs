@@ -8,6 +8,7 @@ double Angle::angle() const
 void Angle::setAngle(double angle)
 {
     m_angle = angle;
+    normalize();
 }
 
 void Angle::normalize()

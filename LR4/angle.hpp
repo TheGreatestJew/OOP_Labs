@@ -8,22 +8,22 @@
 #endif
 
 class Angle {
-private:
+protected:
     double m_angle;
 
 public:
     Angle();
     Angle(double angle);
     Angle(const Angle& other) = default;
-    ~Angle() = default;
+    virtual ~Angle() = default;
 
     double toRadians() const;
 
     Angle operator+(const Angle& other) const;
     Angle operator-(const Angle& other) const;
 
-    double angle() const;
-    void setAngle(double angle);
+    virtual double angle() const;
+    virtual void setAngle(double angle);
 
 private:
     void normalize();

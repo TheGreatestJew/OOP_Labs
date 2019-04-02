@@ -8,15 +8,22 @@ private:
     int m_value;
 
 public:
-    D2(int value = 0, D1 d1 = D1());
+    D2(int value = 0, int d1 = 0, int b1 = 0, int b2 = 0);
+    ~D2() override;
 
     void show() const override;
 };
 
-D2::D2(int value, D1 d1)
-    : D1(d1)
+D2::D2(int value, int d1, int b1, int b2)
+    : D1(d1, b1, b2)
     , m_value(value)
 {
+    std::cout << "D2()\n";
+}
+
+D2::~D2()
+{
+    std::cout << "~D2()\n";
 }
 
 void D2::show() const

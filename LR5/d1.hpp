@@ -10,16 +10,23 @@ private:
     int m_value;
 
 public:
-    D1(int d1_value = 0, B1 b1 = 0, B2 b2 = 0);
+    D1(int d1_value = 0, int b1 = 0, int b2 = 0);
+    ~D1() override;
 
     void show() const override;
 };
 
-D1::D1(int d1_value, B1 b1, B2 b2)
+D1::D1(int d1_value, int b1, int b2)
     : B1(b1)
     , B2(b2)
     , m_value(d1_value)
 {
+    std::cout << "D1()\n";
+}
+
+D1::~D1()
+{
+    std::cout << "~D1()\n";
 }
 
 void D1::show() const

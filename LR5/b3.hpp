@@ -9,7 +9,7 @@ private:
 
 public:
     B3(int value = 0);
-    virtual ~B3() = default;
+    virtual ~B3();
 
     virtual void show() const;
 };
@@ -17,6 +17,12 @@ public:
 B3::B3(int value)
     : m_value(value)
 {
+    std::cout << "B3()\n";
+}
+
+B3::~B3()
+{
+    std::cout << "~B3()\n";
 }
 
 void B3::show() const

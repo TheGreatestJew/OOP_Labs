@@ -27,7 +27,47 @@ int main()
     auto triangle = RightTriangle(45, 6);
     cout << "\ttriangle.angle() = " << triangle.angle() << "\n";
     cout << "\ttriangle.length() = " << triangle.length() << "\n";
-    cout << "\ttriangle.area() = " << triangle.area() << "\n";
+    cout << "\ttriangle.area() = " << triangle.area() << "\n\n";
+
+    try {
+        cout << "\ttriangle.setAngle(0) : ";
+        triangle.setAngle(0);
+        cout << "\ttriangle.angle() = " << triangle.angle() << "\n";
+    } catch (const std::exception& e) {
+        cout << "Ошибка - " << e.what() << "\n";
+    }
+
+    try {
+        cout << "\ttriangle.setAngle(90) : ";
+        triangle.setAngle(90);
+        cout << "\ttriangle.angle() = " << triangle.angle() << "\n";
+    } catch (const std::exception& e) {
+        cout << "Ошибка - " << e.what() << "\n";
+    }
+
+    try {
+        cout << "\ttriangle.setAngle(135) : ";
+        triangle.setAngle(135);
+        cout << "\ttriangle.angle() = " << triangle.angle() << "\n";
+    } catch (const std::exception& e) {
+        cout << "Ошибка - " << e.what() << "\n";
+    }
+
+    try {
+        cout << "\ttriangle.setLength(0) : ";
+        triangle.setLength(0);
+        cout << "\ttriangle.length() = " << triangle.length() << "\n";
+    } catch (const std::exception& e) {
+        cout << "Ошибка - " << e.what() << "\n";
+    }
+
+    try {
+        cout << "\ttriangle.setLength(-10) : ";
+        triangle.setLength(-10);
+        cout << "\ttriangle.length() = " << triangle.length() << "\n";
+    } catch (const std::exception& e) {
+        cout << "Ошибка - " << e.what() << "\n";
+    }
 
     return 0;
 }

@@ -11,10 +11,10 @@ public:
     RightTriangle();
     RightTriangle(double angle, double length);
     RightTriangle(const RightTriangle& other) = default;
-    ~RightTriangle() = default;
+    ~RightTriangle() override = default;
 
-    virtual double angle() const;
-    virtual void setAngle(double angle);
+    double angle() const override;
+    void setAngle(double angle) override;
     double length() const;
     void setLength(double length);
 

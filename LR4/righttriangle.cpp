@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 RightTriangle::RightTriangle()
-    : Angle()
+    : Angle(45)
 {
     setLength(1);
 }
@@ -21,8 +21,8 @@ double RightTriangle::angle() const
 
 void RightTriangle::setAngle(double angle)
 {
-    if (angle < 0.0 || 90.0 < angle)
-        throw std::runtime_error("Invalid angle");
+    if (angle <= 0.0 || 90.0 <= angle)
+        throw std::runtime_error("Неправильный угол : должно быть 0 < angle < 90");
 
     Angle::setAngle(angle);
 }
@@ -34,6 +34,8 @@ double RightTriangle::length() const
 
 void RightTriangle::setLength(double length)
 {
+    if (length <= 0)
+        throw std::runtime_error("Неправильная длина катета : должно быть length > 0");
     m_length = length;
 }
 

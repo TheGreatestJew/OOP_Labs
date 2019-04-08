@@ -6,6 +6,7 @@ set(SOURCES
 )
 
 set(HEADERS
+	input.hpp
     array.hpp
     arrayemptyexception.hpp
     invalidposexception.hpp

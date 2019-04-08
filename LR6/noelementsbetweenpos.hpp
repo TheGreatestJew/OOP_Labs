@@ -12,7 +12,7 @@ public:
 
 const char* NoElementsBetweenPos::what() const noexcept
 {
-    return "Нет элементов между положительными элементами.";
+    return "Нет элементов между положительными элементами";
 }
 
 #endif // NOELEMENTSBETWEENPOS_HPP

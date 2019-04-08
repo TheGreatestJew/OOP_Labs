@@ -12,7 +12,7 @@ public:
 
 const char* ArrayEmptyException::what() const noexcept
 {
-    return "Попытка работать с пустым массивом.";
+    return "Попытка работать с пустым массивом";
 }
 
 #endif // ARRAYEMPTYEXCEPTION_HPP

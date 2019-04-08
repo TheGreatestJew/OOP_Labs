@@ -38,8 +38,6 @@ void testArray(Array& array)
 int main()
 {
     Array array;
-    TypeData sourceArray[COUNT_OF_ELEMENTS] = { -1, -2, 0, -4, -5, -6, -7, 0, 1, 1, -1, -9, -3, -4, -5 };
-    array = Array(sourceArray, COUNT_OF_ELEMENTS);
     testArray(array);
 
     return 0;

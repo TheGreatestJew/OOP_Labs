@@ -3,20 +3,18 @@
 #include "invalidposexception.hpp"
 #include "noelementsbetweenpos.hpp"
 #include "noposelementsexception.hpp"
+#include "nozerosexception.hpp"
+#include "input.hpp"
 #include <iostream>
+#include <limits>
 
 Array::Array()
     : m_array(nullptr)
     , m_size(0)
 {
-}
-
-Array::Array(TypeData* array, size_t size)
-    : Array()
-{
-    for (size_t pos = 0; pos < size; pos++) {
-        pushBack(array[pos]);
-    }
+	auto size = inputValue<long long>("Введите размер массива: ", 0, UINT_MAX);
+	m_size = static_cast<unsigned>(size);
+	m_array = inputArray<TypeData>("Введите значения массива: ", m_size);
 }
 
 Array::~Array()
@@ -25,38 +23,6 @@ Array::~Array()
     if (m_array)
         delete[] m_array;
     m_array = nullptr;
-}
-
-void Array::resize(size_t new_size)
-{
-    if (new_size == 0) {
-        if (m_array)
-            delete[] m_array;
-        m_array = nullptr;
-        m_size = 0;
-        return;
-    }
-
-    TypeData* arr = new TypeData[new_size];
-    if (m_size > new_size) {
-        for (size_t pos = 0; pos < new_size; pos++) {
-            arr[pos] = m_array[pos];
-        }
-    } else {
-        for (size_t pos = 0; pos < m_size; pos++) {
-            arr[pos] = m_array[pos];
-        }
-    }
-
-    delete[] m_array;
-    m_array = arr;
-    m_size = new_size;
-}
-
-void Array::pushBack(TypeData data)
-{
-    resize(m_size + 1);
-    m_array[m_size - 1] = data;
 }
 
 TypeData& Array::operator[](size_t pos) const
@@ -75,7 +41,7 @@ void Array::print() const
         return;
     }
 
-    for (size_t pos = 0; pos < m_size; pos++) {
+    for (unsigned pos = 0; pos < m_size; pos++) {
         std::cout << m_array[pos] << " ";
     }
 
@@ -88,7 +54,7 @@ TypeData Array::searchMinElement() const
         throw ArrayEmptyException();
 
     TypeData curMin = m_array[0];
-    for (size_t pos = 1; pos < m_size; pos++) {
+    for (unsigned pos = 1; pos < m_size; pos++) {
         if (m_array[pos] < curMin)
             curMin = m_array[pos];
     }
@@ -101,7 +67,7 @@ TypeData Array::sum() const
     if (m_size == 0)
         throw ArrayEmptyException();
 
-    size_t posFirst = 0;
+    unsigned posFirst = 0;
     for (posFirst = 0; posFirst < m_size; posFirst++) {
         if (0 < m_array[posFirst])
             break;
@@ -110,7 +76,7 @@ TypeData Array::sum() const
         throw NoPosElementsException();
     }
 
-    size_t posScnd = m_size - 1;
+    unsigned posScnd = m_size - 1;
     for (posScnd = m_size - 1; posScnd > 0; posScnd--) {
         if (0 < m_array[posScnd])
             break;
@@ -126,7 +92,7 @@ TypeData Array::sum() const
         throw NoElementsBetweenPos();
 
     TypeData out = 0;
-    for (size_t pos = posFirst + 1; pos < posScnd; pos++) {
+    for (unsigned pos = posFirst + 1; pos < posScnd; pos++) {
         out += m_array[pos];
     }
 
@@ -135,18 +101,16 @@ TypeData Array::sum() const
 
 void Array::zeroFirst()
 {
-    size_t lastZero = 0;
-    for (size_t pos = 0; pos < m_size; pos++) {
+    unsigned lastZero = 0;
+	bool foundedZeros = false;
+    for (unsigned pos = 0; pos < m_size; pos++) {
         if (m_array[pos] == 0) {
+			foundedZeros = true;
             std::swap(m_array[lastZero], m_array[pos]);
             lastZero++;
         }
     }
-}
 
-Array& Array::operator=(Array&& other)
-{
-    std::swap(m_array, other.m_array);
-    std::swap(m_size, other.m_size);
-    return *this;
+	if (!foundedZeros)
+		throw NoZerosException();
 }

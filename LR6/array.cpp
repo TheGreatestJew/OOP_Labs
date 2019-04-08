@@ -28,7 +28,7 @@ Array::~Array()
 TypeData& Array::operator[](size_t pos) const
 {
     if (m_size <= pos)
-        throw InvalidPosException();
+        throw InvalidPosException(pos, m_size);
 
     return m_array[pos];
 }
@@ -89,7 +89,7 @@ TypeData Array::sum() const
         throw NoPosElementsException();
 
     if (posFirst == posScnd - 1)
-        throw NoElementsBetweenPos();
+        throw NoElementsBetweenPos(m_array[posFirst], m_array[posScnd]);
 
     TypeData out = 0;
     for (unsigned pos = posFirst + 1; pos < posScnd; pos++) {

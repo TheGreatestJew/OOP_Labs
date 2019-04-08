@@ -148,4 +148,5 @@ Array& Array::operator=(Array&& other)
 {
     std::swap(m_array, other.m_array);
     std::swap(m_size, other.m_size);
+    return *this;
 }

@@ -3,3 +3,7 @@ build
 *.user
 *.exe
 *.dll
+
+.vs
+.vscode
+CMakeSettings.json

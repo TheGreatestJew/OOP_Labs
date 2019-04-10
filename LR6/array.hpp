@@ -15,8 +15,7 @@ public:
     Array(const Array& other) = delete;
     ~Array();
 
-
-    TypeData& operator[](size_t pos) const;
+    TypeData& operator[](unsigned pos) const;
     unsigned size() const { return m_size; }
 
     void print() const;

@@ -1,20 +1,20 @@
 #include "array.hpp"
 #include "arrayemptyexception.hpp"
+#include "input.hpp"
 #include "invalidposexception.hpp"
 #include "noelementsbetweenpos.hpp"
 #include "noposelementsexception.hpp"
 #include "nozerosexception.hpp"
-#include "input.hpp"
+#include <climits>
 #include <iostream>
-#include <limits>
 
 Array::Array()
     : m_array(nullptr)
     , m_size(0)
 {
-	auto size = inputValue<long long>("Введите размер массива: ", 0, UINT_MAX);
-	m_size = static_cast<unsigned>(size);
-	m_array = inputArray<TypeData>("Введите значения массива: ", m_size);
+    auto size = inputValue<long long>("Введите размер массива: ", 0, UINT_MAX);
+    m_size = static_cast<unsigned>(size);
+    m_array = inputArray<TypeData>("Введите значения массива: ", m_size);
 }
 
 Array::~Array()
@@ -25,7 +25,7 @@ Array::~Array()
     m_array = nullptr;
 }
 
-TypeData& Array::operator[](size_t pos) const
+TypeData& Array::operator[](unsigned pos) const
 {
     if (m_size <= pos)
         throw InvalidPosException(pos, m_size);
@@ -102,15 +102,15 @@ TypeData Array::sum() const
 void Array::zeroFirst()
 {
     unsigned lastZero = 0;
-	bool foundedZeros = false;
+    bool foundedZeros = false;
     for (unsigned pos = 0; pos < m_size; pos++) {
         if (m_array[pos] == 0) {
-			foundedZeros = true;
+            foundedZeros = true;
             std::swap(m_array[lastZero], m_array[pos]);
             lastZero++;
         }
     }
 
-	if (!foundedZeros)
-		throw NoZerosException();
+    if (!foundedZeros)
+        throw NoZerosException();
 }

@@ -6,12 +6,13 @@ set(SOURCES
 )
 
 set(HEADERS
-	input.hpp
+    input.hpp
     array.hpp
     arrayemptyexception.hpp
     invalidposexception.hpp
     noposelementsexception.hpp
     noelementsbetweenpos.hpp
+    nozerosexception.hpp
 )
 
 add_executable(LR6 ${HEADERS} ${SOURCES})

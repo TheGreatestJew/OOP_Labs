@@ -1,8 +1,6 @@
 #include "array.hpp"
 #include <iostream>
 
-const size_t COUNT_OF_ELEMENTS = 15;
-
 void testArray(Array& array)
 {
     array.print();

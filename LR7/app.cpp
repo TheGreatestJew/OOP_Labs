@@ -1,6 +1,7 @@
 #include "app.hpp"
 #include "input.hpp"
 #include <climits>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <utility>
@@ -75,11 +76,10 @@ void App::print()
         return;
     }
 
-    std::cout << m_values[0];
-
-    for (unsigned pos = 1; pos < m_values.size(); pos++) {
-        std::cout << ", " << m_values[pos];
+    for (unsigned pos = 0; pos < m_values.size() - 1; pos++) {
+        std::cout << std::setw(6) << std::setprecision(3) << std::right << m_values[pos] << ", ";
     }
+    std::cout << std::setw(6) << std::setprecision(3) << std::right << m_values[m_values.size() - 1];
 
     std::cout << "\n";
 }

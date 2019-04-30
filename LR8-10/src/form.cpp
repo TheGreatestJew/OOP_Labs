@@ -1,6 +1,7 @@
 #include "form.hpp"
 #include "calcfacade.hpp"
 #include <QMessageBox>
+#include <cfloat>
 #include <climits>
 
 Form::Form(QWidget* parnet)

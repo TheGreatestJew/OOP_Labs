@@ -33,7 +33,11 @@ void States::undo()
 
 bool States::hasStates() const
 {
-    return !array.empty();
+    if (array.empty())
+        return false;
+    else if (array.size() == 1 && array.first() == actualData)
+        return false;
+    return true;
 }
 
 Estate* States::getActualData() const

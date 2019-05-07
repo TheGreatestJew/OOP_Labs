@@ -24,6 +24,7 @@ void States::undo()
         array.removeAll(actualData);
         delete actualData;
         actualData = nullptr;
+        emit notifyObservers();
     }
     if (hasStates()) {
         actualData = array.takeFirst();

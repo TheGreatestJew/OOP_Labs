@@ -31,6 +31,8 @@ void Form::update()
     if (value != nullptr) {
         fillForm(value);
         showCost(value);
+    } else {
+        // resetFields();
     }
 }
 

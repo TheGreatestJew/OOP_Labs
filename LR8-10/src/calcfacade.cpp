@@ -1,22 +1,35 @@
 #include "calcfacade.hpp"
-#include "cottagecalc.hpp"
-#include "economcalc.hpp"
-#include "luxcalc.hpp"
-#include "townhousecalc.hpp"
+
+CalcFactoryLux CalcFacade::m_luxFactory = CalcFactoryLux();
+CalcFactoryEconom CalcFacade::m_economFactory = CalcFactoryEconom();
+CalcFactoryCottage CalcFacade::m_cottageFactory = CalcFactoryCottage();
+CalcFactoryTownHouse CalcFacade::m_townHouseFactory = CalcFactoryTownHouse();
 
 int CalcFacade::getCost(Estate* value)
 {
     auto type = value->getType();
 
+    bstractCalc* calc = nullptr;
+
     switch (type) {
     case Estate::ECONOM:
-        return EconomCalc::getCost(value);
+        calc = CalcFacade::m_economFactory.FactoryMethod(value);
+        break;
     case Estate::LUXURIOUS:
-        return LuxCalc::getCost(value);
+        calc = CalcFacade::m_luxFactory.FactoryMethod(value);
+        break;
     case Estate::TOWN_HOUSE:
-        return TownHouseCalc::getCost(value);
+        calc = CalcFacade::m_townHouseFactory.FactoryMethod(value);
+        break;
     case Estate::COTTAGE:
-        return CottageCalc::getCost(value);
+        calc = CalcFacade::m_cottageFactory.FactoryMethod(value);
+        break;
+    }
+
+    if (calc) {
+        auto cost = calc->getCost();
+        delete calc;
+        return cost;
     }
     return -1;
 }

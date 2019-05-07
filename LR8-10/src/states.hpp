@@ -19,6 +19,9 @@ public:
     bool hasStates() const;
     Estate* getActualData() const;
     void add(Estate* state);
+
+signals:
+    void notifyObservers();
 };
 
 #endif // STATES_HPP

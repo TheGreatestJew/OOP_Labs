@@ -15,6 +15,7 @@ Form::Form(QWidget* parnet)
     m_ui->residents->setValidator(new QIntValidator(0, INT_MAX, this));
     m_ui->area->setValidator(new QDoubleValidator(0, DBL_MAX, 2, this));
 
+    connect(&info, &States::notifyObservers, this, &Form::update);
     connect(m_ui->btnCalc, &QPushButton::clicked, this, &Form::btnCalcPressed);
     connect(m_ui->btnUndo, &QPushButton::clicked, this, &Form::btnUndoPressed);
 }
@@ -24,7 +25,31 @@ Form::~Form()
     delete m_ui;
 }
 
+void Form::update()
+{
+    auto value = info.getActualData();
+    if (value != nullptr) {
+        fillForm(value);
+        showCost(value);
+    }
+}
+
 void Form::btnCalcPressed()
+{
+    auto state = processForm();
+    info.add(state);
+}
+
+void Form::btnUndoPressed()
+{
+    if (!info.hasStates()) {
+        QMessageBox::warning(this, "Ошибка", "Больше нет состояний.");
+        return;
+    }
+    info.undo();
+}
+
+Estate* Form::processForm() const
 {
     auto owner = m_ui->owner->text();
     auto age = m_ui->age->text().toInt();
@@ -33,24 +58,10 @@ void Form::btnCalcPressed()
     auto area = m_ui->area->text().toDouble();
     auto months = (1 + m_ui->period->currentIndex()) * 6;
 
-    auto state = new Estate(age, area, res, months, classOfHome, owner);
-    states.add(state);
-
-    resetFields();
-    calcCost(state);
+    return new Estate(age, area, res, months, classOfHome, owner);
 }
 
-void Form::btnUndoPressed()
-{
-    if (!states.hasStates()) {
-        QMessageBox::warning(this, "Ошибка", "Больше нет состояний.");
-        return;
-    }
-    states.undo();
-    setState(states.getActualData());
-}
-
-void Form::setState(Estate* state)
+void Form::fillForm(Estate* state)
 {
     if (!state) {
         return;
@@ -74,20 +85,10 @@ void Form::setState(Estate* state)
     auto months = state->getMonths() / 6 - 1;
     m_ui->period->setCurrentIndex(months);
 
-    calcCost(state);
+    showCost(state);
 }
 
-void Form::resetFields()
-{
-    m_ui->owner->setText("");
-    m_ui->age->setText("");
-    m_ui->estateType->setCurrentIndex(0);
-    m_ui->residents->setText("");
-    m_ui->area->setText("");
-    m_ui->period->setCurrentIndex(0);
-}
-
-void Form::calcCost(Estate* state)
+void Form::showCost(Estate* state)
 {
     auto cost = CalcFacade::getCost(state);
     m_ui->cost->setText(QString("%1").arg(cost));

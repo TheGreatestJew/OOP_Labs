@@ -10,7 +10,7 @@ class Form : public QWidget {
 
 private:
     Ui::Form* m_ui;
-    States states;
+    States info;
 
 public:
     explicit Form(QWidget* parnet = nullptr);
@@ -18,14 +18,16 @@ public:
     ~Form();
 
 public slots:
+    void update();
+private slots:
     void btnCalcPressed();
     void btnUndoPressed();
 
 private:
-    void setState(Estate* state);
-    void resetFields();
+    Estate* processForm() const;
+    void fillForm(Estate* state);
 
-    void calcCost(Estate* state);
+    void showCost(Estate* state);
 };
 
 #endif // FORM_HPP
